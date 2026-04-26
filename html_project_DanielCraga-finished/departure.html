@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Departure Flight - Aero Blue</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="shortcut icon" href="assets/favicon.ico">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="nav-left">
+      <div class="brand">
+        <span class="brand-text">AeroBlue</span>
+      </div>
+
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="flights.html">Flights</a>
+        <a href="deals.html">Deals</a>
+        <a href="help.html">Help</a>
+        <a href="about.html">About</a>
+      </nav>
+    </div>
+
+    <div class="nav-right">
+      <button class="nav-btn secondary" id="openRegisterBtn">Register</button>
+      <button class="nav-btn primary" id="openLoginBtn">Log in</button>
+    </div>
+  </header>
+
+
+  <main class="step-page">
+    <section class="page-hero small-hero">
+      <div>
+        <p class="step-label">Log in > Home > Departure flight</p>
+        <h1 id="departureTitle">Departure flights</h1>
+        <p class="page-description">Choose your outbound flight and fare type.</p>
+      </div>
+    </section>
+
+    <section class="content-card">
+      <div class="summary-bar" id="tripSummaryBar">
+        <span>Tirana (TIA) → Rome (FCO)</span>
+        <span>Return trip</span>
+        <span>1 adult</span>
+      </div>
+
+      <div class="date-tabs" id="departureDateTabs">
+        <div class="date-tab active">Mon 4 May</div>
+        <div class="date-tab">Tue 5 May</div>
+        <div class="date-tab">Wed 6 May</div>
+      </div>
+
+      <div class="flight-list" id="departureFlightList">
+        <div class="flight-card">
+          <div>
+            <div class="flight-label">Depart</div>
+            <div class="flight-value">06:20</div>
+          </div>
+          <div>
+            <div class="flight-label">Arrive</div>
+            <div class="flight-value">08:05</div>
+          </div>
+          <div>
+            <div class="flight-label">Duration</div>
+            <div class="flight-value">1h 45m</div>
+          </div>
+          <div>
+            <div class="flight-label">Economy from</div>
+            <div class="flight-value">€49</div>
+          </div>
+          <a href="return.html" class="flight-select-btn">Select</a>
+        </div>
+        <div class="flight-card">
+          <div>
+            <div class="flight-label">Depart</div>
+            <div class="flight-value">14:35</div>
+          </div>
+          <div>
+            <div class="flight-label">Arrive</div>
+            <div class="flight-value">16:20</div>
+          </div>
+          <div>
+            <div class="flight-label">Duration</div>
+            <div class="flight-value">1h 45m</div>
+          </div>
+          <div>
+            <div class="flight-label">Economy from</div>
+            <div class="flight-value">€59</div>
+          </div>
+          <a href="return.html" class="flight-select-btn">Select</a>
+        </div>
+      </div>
+
+      <p class="form-error" id="departureError"></p>
+    </section>
+  </main>
+
+
+  <footer class="site-footer" id="help">
+    <div class="footer-inner">
+      <div>
+        <h4>AeroBlue</h4>
+        <p>Blue skies. Better journeys.</p>
+      </div>
+      <div>
+        <h4>Support</h4>
+        <p>Manage bookings, compare dates, and complete your reservation online.</p>
+      </div>
+    </div>
+  </footer>
+
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="loginModal">
+      <button class="close-btn" data-close>&times;</button>
+      <h2>Log in</h2>
+      <p class="modal-subtitle">Access your booking and manage your flights.</p>
+
+      <form id="loginForm" class="modal-form">
+        <input type="email" id="loginEmail" placeholder="Email">
+        <input type="password" id="loginPassword" placeholder="Password">
+        <button type="submit" class="modal-main-btn">Log in</button>
+        <button type="button" class="modal-secondary-btn" data-close>Cancel</button>
+      </form>
+
+      <div class="modal-links">
+        <button class="text-link" id="switchToRegister">Register</button>
+      </div>
+    </div>
+
+    <div class="modal hidden" id="registerModal">
+      <button class="close-btn" data-close>&times;</button>
+      <h2>Create account</h2>
+      <p class="modal-subtitle">Join and start booking flights.</p>
+
+      <form id="registerForm" class="modal-form">
+        <input type="text" id="registerName" placeholder="Full Name">
+        <input type="email" id="registerEmail" placeholder="Email">
+        <input type="password" id="registerPassword" placeholder="Password">
+        <input type="password" id="registerConfirmPassword" placeholder="Confirm Password">
+        <button type="submit" class="modal-main-btn">Register</button>
+        <button type="button" class="modal-secondary-btn" data-close>Cancel</button>
+      </form>
+
+      <div class="modal-links">
+        <button class="text-link" id="switchToLogin">Already have an account? Log in</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/loginregister.js"></script>
+</body>
+</html>
