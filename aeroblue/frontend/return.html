@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Return Flight - AeroBlue</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="nav-left">
+      <div class="brand"><span class="brand-text">AeroBlue</span></div>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="flights.html">Flights</a>
+        <a href="deals.html">Deals</a>
+        <a href="help.html">Help</a>
+        <a href="about.html">About</a>
+        <a href="mytickets.html">My Tickets</a>
+      </nav>
+    </div>
+    <div class="nav-right">
+      <button class="nav-btn secondary" id="openRegisterBtn">Register</button>
+      <button class="nav-btn primary" id="openLoginBtn">Log in</button>
+    </div>
+  </header>
+
+  <main class="step-page">
+    <section class="page-hero small-hero">
+      <div>
+        <p class="step-label">Home › Departure flight › Return flight</p>
+        <h1>Select Return Flight</h1>
+        <p class="page-description">Choose your inbound flight and fare.</p>
+      </div>
+    </section>
+
+    <section class="content-card">
+      <div class="summary-bar" id="tripSummaryBar">
+        <span id="summaryRoute">Loading...</span>
+        <span id="summaryOutbound">Outbound selected</span>
+        <span id="summaryPassengers">1 adult</span>
+      </div>
+
+      <div class="date-tabs" id="returnDateTabs"></div>
+      <div class="flight-list" id="returnFlightList"></div>
+      <p class="form-error" id="returnError"></p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div><h4>AeroBlue</h4><p>Blue skies. Better journeys.</p></div>
+    </div>
+  </footer>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="loginModal">
+      <button class="close-btn" data-close>&times;</button>
+      <h2>Log in</h2>
+      <p class="modal-subtitle">Access your booking and manage your flights.</p>
+      <form id="loginForm" class="modal-form">
+        <input type="email" id="loginEmail" placeholder="Email">
+        <input type="password" id="loginPassword" placeholder="Password">
+        <button type="submit" class="modal-main-btn">Log in</button>
+        <button type="button" class="modal-secondary-btn" data-close>Cancel</button>
+      </form>
+      <div class="modal-links"><button class="text-link" id="switchToRegister">Register</button></div>
+    </div>
+    <div class="modal hidden" id="registerModal">
+      <button class="close-btn" data-close>&times;</button>
+      <h2>Create account</h2>
+      <p class="modal-subtitle">Join and start booking flights.</p>
+      <form id="registerForm" class="modal-form">
+        <input type="text" id="registerName" placeholder="Full Name">
+        <input type="email" id="registerEmail" placeholder="Email">
+        <input type="password" id="registerPassword" placeholder="Password">
+        <input type="password" id="registerConfirmPassword" placeholder="Confirm Password">
+        <button type="submit" class="modal-main-btn">Register</button>
+        <button type="button" class="modal-secondary-btn" data-close>Cancel</button>
+      </form>
+      <div class="modal-links"><button class="text-link" id="switchToLogin">Already have an account? Log in</button></div>
+    </div>
+  </div>
+
+  <script src="js/loginregister.js"></script>
+  <script src="js/flightsdata.js"></script>
+  <script>
+  $(document).ready(function () {
+    const booking = JSON.parse(sessionStorage.getItem("aeroblue_booking") || "{}");
+
+    const origin = booking.origin || "Tirana (TIA)";
+    const destination = booking.destination || "Rome (FCO)";
+    const passengers = booking.passengers || 1;
+    const departurePrice = booking.departurePrice || 0;
+
+    // Update summary bar - return flight is destination back to origin
+    $("#summaryRoute").text(destination.split("(")[0].trim() + " → " + origin.split("(")[0].trim());
+    $("#summaryOutbound").text("Outbound: " + (booking.departureDate || "selected"));
+    const adults = booking.adults || passengers;
+    const children = booking.children || 0;
+    let passengerLabel = adults + " adult" + (adults > 1 ? "s" : "");
+    if (children > 0) passengerLabel += ", " + children + " child" + (children > 1 ? "ren" : "");
+    $("#summaryPassengers").text(passengerLabel);
+
+    // Return route is reversed
+    const routeKey = getRouteKey(destination, origin);
+    const routeData = FLIGHTS_DB[routeKey] || FLIGHTS_DB[getRouteKey(origin, destination)];
+
+    if (!routeData) {
+      $("#returnError").text("No return flights found for this route.");
+      return;
+    }
+
+    // Use later dates for return
+    const returnSchedules = routeData.schedules.map(function(s, i) {
+      const d = new Date(s.date);
+      d.setDate(d.getDate() + 5 + i);
+      return { ...s, date: d.toISOString().split("T")[0] };
+    });
+
+    // Build date tabs
+    returnSchedules.forEach(function(s, i) {
+      const tab = $('<div class="date-tab' + (i === 0 ? ' active' : '') + '">' + formatDate(s.date) + '</div>');
+      tab.on("click", function () {
+        $(".date-tab").removeClass("active");
+        $(this).addClass("active");
+        renderFlights(i);
+      });
+      $("#returnDateTabs").append(tab);
+    });
+
+    function renderFlights(dateIndex) {
+      const schedule = returnSchedules[dateIndex];
+      $("#returnFlightList").empty();
+      schedule.flights.forEach(function(f) {
+        const totalPrice = departurePrice + f.price;
+        const card = $(`
+          <div class="flight-card">
+            <div><div class="flight-label">Depart</div><div class="flight-value">${f.depart}</div></div>
+            <div><div class="flight-label">Arrive</div><div class="flight-value">${f.arrive}</div></div>
+            <div><div class="flight-label">Duration</div><div class="flight-value">${routeData.duration}</div></div>
+            <div><div class="flight-label">Economy from</div><div class="flight-value">€${f.price}</div></div>
+            <div><div class="flight-label">Total</div><div class="flight-value" style="color:#1a6bff;font-weight:700;">€${totalPrice}</div></div>
+            <button class="flight-select-btn">Select</button>
+          </div>
+        `);
+        card.find(".flight-select-btn").on("click", function () {
+          const updated = {
+            ...booking,
+            returnDate: schedule.date + " · " + f.depart,
+            returnPrice: f.price,
+            price: totalPrice
+          };
+          sessionStorage.setItem("aeroblue_booking", JSON.stringify(updated));
+          window.location.href = "payment.html";
+        });
+        $("#returnFlightList").append(card);
+      });
+    }
+
+    renderFlights(0);
+  });
+  </script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Tickets - AeroBlue</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <style>
+    .tickets-page { max-width: 860px; margin: 60px auto; padding: 0 24px; }
+    .tickets-page h1 { font-size: 2rem; margin-bottom: 8px; }
+    .tickets-page .subtitle { color: #666; margin-bottom: 32px; }
+    .ticket-card {
+      background: #fff;
+      border: 1px solid #dde3f0;
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .ticket-route { font-size: 1.2rem; font-weight: 700; color: #0a1628; }
+    .ticket-dates { font-size: 13px; color: #555; margin-top: 6px; }
+    .ticket-badge {
+      background: #e8f5e9;
+      color: #2e7d32;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .ticket-price { font-size: 1.4rem; font-weight: 700; color: #1a6bff; text-align: right; }
+    .ticket-passengers { font-size: 12px; color: #888; margin-top: 4px; text-align: right; }
+    .ticket-code { font-size: 11px; color: #aaa; margin-top: 4px; }
+    .empty-state { text-align: center; padding: 80px 20px; color: #888; }
+    .empty-state i { font-size: 64px; color: #dde3f0; margin-bottom: 20px; }
+    .empty-state h2 { font-size: 1.4rem; color: #555; margin-bottom: 10px; }
+    .empty-state a { color: #1a6bff; text-decoration: none; font-weight: 600; }
+    .not-logged { text-align: center; padding: 80px 20px; }
+    .not-logged i { font-size: 64px; color: #dde3f0; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="nav-left">
+      <div class="brand"><span class="brand-text">AeroBlue</span></div>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="flights.html">Flights</a>
+        <a href="deals.html">Deals</a>
+        <a href="help.html">Help</a>
+        <a href="about.html">About</a>
+        <a href="mytickets.html">My Tickets</a>
+      </nav>
+    </div>
+    <div class="nav-right">
+      <button class="nav-btn secondary" id="openRegisterBtn">Register</button>
+      <button class="nav-btn primary" id="openLoginBtn">Log in</button>
+    </div>
+  </header>
+
+  <div class="tickets-page">
+    <h1>My Tickets</h1>
+    <p class="subtitle">All your booked flights in one place.</p>
+    <div id="ticketsContainer">
+      <div class="empty-state">
+        <i class="fa-solid fa-ticket"></i>
+        <h2>Loading...</h2>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div><h4>AeroBlue</h4><p>Blue skies. Better journeys.</p></div>
+      <div class="footer-links">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Manage Bookings</a></li>
+          <li><a href="help.html">Help Center</a></li>
+        </ul>
+      </div>
+      <div class="footer-social">
+        <h4>Follow Us</h4>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom"><p>© 2026 AeroBlue. All rights reserved.</p></div>
+  </footer>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="loginModal">
+      <button class="close-btn" data-close>&times;</button>
+      <h2>Log in</h2>
+      <p class="modal-subtitle">Access your booking and manage your flights.</p>
+      <form id="loginForm" class="modal-form">
+        <input type="email" id="loginEmail" placeholder="Email">
+        <input type="password" id="loginPassword" placeholder="Password">
+        <button type="submit" class="modal-main-btn">Log in</button>
+        <button type="button" class="modal-secondary-btn" data-close>Cancel</button>
+      </form>
+      <div class="modal-links"><button class="text-link" id="switchToRegister">Register</button></div>
+    </div>
+    <div class="modal hidden" id="registerModal">
+      <button class="close-btn" data-close>&times;</button>
+      <h2>Create account</h2>
+      <p class="modal-subtitle">Join and start booking flights.</p>
+      <form id="registerForm" class="modal-form">
+        <input type="text" id="registerName" placeholder="Full Name">
+        <input type="email" id="registerEmail" placeholder="Email">
+        <input type="password" id="registerPassword" placeholder="Password">
+        <input type="password" id="registerConfirmPassword" placeholder="Confirm Password">
+        <button type="submit" class="modal-main-btn">Register</button>
+        <button type="button" class="modal-secondary-btn" data-close>Cancel</button>
+      </form>
+      <div class="modal-links"><button class="text-link" id="switchToLogin">Already have an account? Log in</button></div>
+    </div>
+  </div>
+
+  <script src="js/loginregister.js"></script>
+  <script>
+  $(document).ready(function () {
+
+    function loadTickets() {
+      const user = JSON.parse(localStorage.getItem("aeroblue_user") || "null");
+
+      if (!user) {
+        $("#ticketsContainer").html(`
+          <div class="not-logged">
+            <i class="fa-solid fa-lock"></i>
+            <h2>Please log in to see your tickets</h2>
+            <p>Your booked flights will appear here once you log in.</p>
+          </div>
+        `);
+        return;
+      }
+
+      $.ajax({
+        url: "http://localhost:5000/api/bookings?userId=" + user.userId,
+        method: "GET",
+        xhrFields: { withCredentials: true },
+        success: function (bookings) {
+          if (!bookings || bookings.length === 0) {
+            $("#ticketsContainer").html(`
+              <div class="empty-state">
+                <i class="fa-solid fa-ticket"></i>
+                <h2>No tickets yet</h2>
+                <p>You haven't booked any flights yet. <a href="flights.html">Browse flights</a> to get started.</p>
+              </div>
+            `);
+            return;
+          }
+
+          $("#ticketsContainer").empty();
+          bookings.forEach(function (b) {
+            const card = $(`
+              <div class="ticket-card">
+                <div>
+                  <div class="ticket-route">${b.origin.split("(")[0].trim()} → ${b.destination.split("(")[0].trim()}</div>
+                  <div class="ticket-dates">
+                    <i class="fa-solid fa-plane-departure"></i> ${b.departureDate || "-"}
+                    ${b.returnDate ? ' &nbsp; <i class="fa-solid fa-plane-arrival"></i> ' + b.returnDate : ""}
+                  </div>
+                  <div class="ticket-code">Ref: AB-${String(b.id).padStart(4,"0")}-2026 &nbsp;·&nbsp; Booked: ${b.bookedAt}</div>
+                </div>
+                <div>
+                  <span class="ticket-badge">✓ ${b.status}</span>
+                  <div class="ticket-price">€${b.price}</div>
+                  <div class="ticket-passengers">${b.passengers} passenger${b.passengers > 1 ? "s" : ""} · ${b.tripType}</div>
+                </div>
+              </div>
+            `);
+            $("#ticketsContainer").append(card);
+          });
+        },
+        error: function () {
+          $("#ticketsContainer").html(`
+            <div class="empty-state">
+              <i class="fa-solid fa-ticket"></i>
+              <h2>No tickets yet</h2>
+              <p>You haven't booked any flights yet. <a href="flights.html">Browse flights</a> to get started.</p>
+            </div>
+          `);
+        }
+      });
+    }
+
+    // Small delay to let session check finish first
+    setTimeout(loadTickets, 500);
+  });
+  </script>
+</body>
+</html>

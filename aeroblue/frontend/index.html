@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aero Blue Airlines</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="shortcut icon" href="assets/favicon.ico">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="nav-left">
+      <div class="brand">
+        <span class="brand-text">AeroBlue</span>
+      </div>
+
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="flights.html">Flights</a>
+        <a href="deals.html">Deals</a>
+        <a href="help.html">Help</a>
+        <a href="about.html">About</a>
+        <a href="mytickets.html">My Tickets</a>
+      </nav>
+    </div>
+
+    <div class="nav-right">
+      <button class="nav-btn secondary" id="openRegisterBtn">Register</button>
+      <button class="nav-btn primary" id="openLoginBtn">Log in</button>
+    </div>
+  </header>
+
+
+  <section class="hero home-hero">
+    <div class="hero-content">
+      <p class="eyebrow">BLUE SKIES. BETTER JOURNEYS.</p>
+      <h1>Discover your next destination</h1>
+      <p class="hero-text">Search direct flights, compare dates, and book your next trip with a clean and simple experience.</p>
+    </div>
+  </section>
+
+  <section class="booking-wrapper" id="booking">
+    <div class="booking-card">
+      <div class="trip-type">
+        <label><input type="radio" name="tripType" value="return" checked> Return</label>
+        <label><input type="radio" name="tripType" value="oneway"> One way</label>
+      </div>
+
+      <div class="booking-grid">
+        <div class="field-wrap">
+          <input list="airport-options" id="originInput" placeholder="Origin">
+        </div>
+        <div class="field-wrap">
+          <input list="airport-options" id="destinationInput" placeholder="Destination">
+        </div>
+        <div class="field-wrap">
+          <input type="text" id="departureDate" placeholder="Departure date" readonly>
+          <div class="simple-calendar" id="departureCalendar"></div>
+        </div>
+        <div class="field-wrap">
+          <input type="text" id="returnDate" placeholder="Return date" readonly>
+          <div class="simple-calendar" id="returnCalendar"></div>
+        </div>
+
+        <div class="passenger-selector">
+          <button type="button" class="passenger-trigger" id="passengerBtn">1 Adult</button>
+
+          <div class="passenger-panel hidden" id="passengerPanel">
+            <div class="passenger-row">
+              <span>Adults</span>
+              <div class="counter-controls">
+                <button type="button" id="minusAdult">-</button>
+                <span id="adultCount">1</span>
+                <button type="button" id="plusAdult">+</button>
+              </div>
+            </div>
+
+            <div class="passenger-row">
+              <span>Children</span>
+              <div class="counter-controls">
+                <button type="button" id="minusChild">-</button>
+                <span id="childCount">0</span>
+                <button type="button" id="plusChild">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="start-booking" id="startBookingBtn">Start booking</button>
+      </div>
+
+      <p class="form-error" id="bookingError"></p>
+
+      <datalist id="airport-options">
+        <option value="Tirana (TIA) - Tirana International Airport">
+        <option value="Rome (FCO) - Leonardo da Vinci Airport">
+        <option value="Milan (MXP) - Malpensa Airport">
+        <option value="Paris (CDG) - Charles de Gaulle Airport">
+        <option value="Berlin (BER) - Berlin Brandenburg Airport">
+        <option value="Vienna (VIE) - Vienna International Airport">
+        <option value="Athens (ATH) - Athens International Airport">
+        <option value="Barcelona (BCN) - Barcelona El Prat Airport">
+        <option value="Madrid (MAD) - Adolfo Suárez Madrid-Barajas Airport">
+        <option value="Amsterdam (AMS) - Amsterdam Schiphol Airport">
+        <option value="Lisbon (LIS) - Humberto Delgado Airport">
+        <option value="Prague (PRG) - Václav Havel Airport Prague">
+      </datalist>
+    </div>
+  </section>
+
+  <section class="weather-section">
+    <div class="weather-card">
+
+        <div class="weather-header">
+            <div>
+                <span class="weather-tag">TRAVEL WEATHER</span>
+                <h2>Check Your Destination Forecast</h2>
+                <p>
+                    View live weather conditions before booking your next flight.
+                </p>
+            </div>
+        </div>
+
+        <div class="weather-search">
+
+            <input
+                type="text"
+                id="cityInput"
+                placeholder="Enter destination city"
+            >
+
+            <button onclick="getWeather()">
+                <i class="fa-solid fa-cloud-sun"></i>
+                Check Weather
+            </button>
+
+        </div>
+
+        <div id="weatherResult"></div>
+
+    </div>
+</section>
+
+<section class="currency-section">
+
+  <div class="currency-card">
+
+      <div class="currency-header">
+          <span class="currency-tag">TRAVEL CURRENCY</span>
+          <h2>Currency Converter</h2>
+          <p>Check exchange rates before your trip.</p>
+      </div>
+
+      <div class="currency-form">
+
+          <input
+              type="number"
+              id="amount"
+              value="1"
+              min="1"
+              placeholder="Amount"
+          >
+
+          <select id="fromCurrency">
+              <option value="EUR">EUR</option>
+              <option value="USD">USD</option>
+              <option value="GBP">GBP</option>
+              <option value="ALL">ALL</option>
+              <option value="CHF">CHF</option>
+          </select>
+
+          <select id="toCurrency">
+              <option value="USD">USD</option>
+              <option value="EUR">EUR</option>
+              <option value="GBP">GBP</option>
+              <option value="ALL">ALL</option>
+              <option value="CHF">CHF</option>
+          </select>
+
+          <button onclick="convertCurrency()">
+              Convert
+          </button>
+
+      </div>
+
+      <div id="currencyResult"></div>
+
+  </div>
+
+</section>
+
+  
+<section class="deals-section" id="deals">
+    <div class="section-head">
+      <h2>Popular deals</h2>
+      <p>Explore a few destinations your airline is currently promoting.</p>
+    </div>
+
+    <div class="deal-grid">
+      <a href="flights.html" class="deal-card" data-origin="Tirana (TIA) - Tirana International Airport" data-destination="Rome (FCO) - Leonardo da Vinci Airport" data-price="49">
+        <img src="assets/images/rome.jpg" alt="Rome Colosseum">
+        <div class="deal-body">
+          <h3>Tirana to Rome</h3>
+          <p>from €49</p>
+        </div>
+      </a>
+
+      <a href="flights.html" class="deal-card" data-origin="Tirana (TIA) - Tirana International Airport" data-destination="Paris (CDG) - Charles de Gaulle Airport" data-price="79">
+        <img src="assets/images/paris.jpg" alt="Paris">
+        <div class="deal-body">
+          <h3>Tirana to Paris</h3>
+          <p>from €79</p>
+        </div>
+      </a>
+
+      <a href="flights.html" class="deal-card" data-origin="Tirana (TIA) - Tirana International Airport" data-destination="Berlin (BER) - Berlin Brandenburg Airport" data-price="69">
+        <img src="assets/images/berlin.jpg" alt="Berlin">
+        <div class="deal-body">
+          <h3>Tirana to Berlin</h3>
+          <p>from €69</p>
+        </div>
+      </a>
+
+      <a href="flights.html" class="deal-card" data-origin="Tirana (TIA) - Tirana International Airport" data-destination="Barcelona (BCN) - Barcelona El Prat Airport" data-price="89">
+        <img src="assets/images/barcelona.jpg" alt="Barcelona">
+        <div class="deal-body">
+          <h3>Tirana to Barcelona</h3>
+          <p>from €89</p>
+        </div>
+      </a>
+
+      <a href="flights.html" class="deal-card" data-origin="Tirana (TIA) - Tirana International Airport" data-destination="Amsterdam (AMS) - Amsterdam Schiphol Airport" data-price="99">
+        <img src="assets/images/amsterdam.jpg" alt="Amsterdam canals">
+        <div class="deal-body">
+          <h3>Tirana to Amsterdam</h3>
+          <p>from €99</p>
+        </div>
+      </a>
+
+      <a href="flights.html" class="deal-card" data-origin="Tirana (TIA) - Tirana International Airport" data-destination="Madrid (MAD) - Adolfo Suárez Madrid-Barajas Airport" data-price="95">
+        <img src="assets/images/madrid.jpg" alt="Madrid">
+        <div class="deal-body">
+          <h3>Tirana to Madrid</h3>
+          <p>from €95</p>
+        </div>
+      </a>
+    </div>
+  </section>
+
+
+
+  <footer class="site-footer" id="help">
+    <div class="footer-inner">
+  
+      <div class="footer-brand">
+        <h4>AeroBlue</h4>
+        <p>Blue skies. Better journeys.</p>
+      </div>
+  
+      <div class="footer-links">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Manage Bookings</a></li>
+          <li><a href="#">Compare Dates</a></li>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+  
+      <div class="footer-social">
+        <h4>Follow Us</h4>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+  
+    </div>
+  
+    <div class="footer-bottom">
+      <p>© 2026 AeroBlue. All rights reserved.</p>
+    </div>
+  </footer>
+
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="loginModal">
+      <button class="close-btn" data-close>&times;</button>
+      <h2>Log in</h2>
+      <p class="modal-subtitle">Access your booking and manage your flights.</p>
+
+      <form id="loginForm" class="modal-form">
+        <input type="email" id="loginEmail" placeholder="Email">
+        <input type="password" id="loginPassword" placeholder="Password">
+        <button type="submit" class="modal-main-btn">Log in</button>
+        <button type="button" class="modal-secondary-btn" data-close>Cancel</button>
+      </form>
+
+      <div class="modal-links">
+        <button class="text-link" id="switchToRegister">Register</button>
+      </div>
+    </div>
+
+    <div class="modal hidden" id="registerModal">
+      <button class="close-btn" data-close>&times;</button>
+      <h2>Create account</h2>
+      <p class="modal-subtitle">Join and start booking flights.</p>
+
+      <form id="registerForm" class="modal-form">
+        <input type="text" id="registerName" placeholder="Full Name">
+        <input type="email" id="registerEmail" placeholder="Email">
+        <input type="password" id="registerPassword" placeholder="Password">
+        <input type="password" id="registerConfirmPassword" placeholder="Confirm Password">
+        <button type="submit" class="modal-main-btn">Register</button>
+        <button type="button" class="modal-secondary-btn" data-close>Cancel</button>
+      </form>
+
+      <div class="modal-links">
+        <button class="text-link" id="switchToLogin">Already have an account? Log in</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/loginregister.js"></script>
+  <script src="js/weather.js"></script>
+  <script src="js/currency.js"></script>
+  <script src="js/flightsdata.js"></script>
+  <script>
+  $(document).ready(function () {
+
+    // ---- Simple Calendar ----
+    function buildCalendar(containerId, inputId) {
+      const container = $("#" + containerId);
+      const input = $("#" + inputId);
+      let current = new Date();
+
+      function render(year, month) {
+        const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        let html = '<div class="cal-header">';
+        html += '<button class="cal-prev">&lt;</button>';
+        html += '<span>' + months[month] + ' ' + year + '</span>';
+        html += '<button class="cal-next">&gt;</button></div>';
+        html += '<div class="cal-grid">';
+        ["Su","Mo","Tu","We","Th","Fr","Sa"].forEach(d => html += '<div class="cal-day-name">' + d + '</div>');
+        for (let i = 0; i < firstDay; i++) html += '<div></div>';
+        for (let d = 1; d <= daysInMonth; d++) {
+          html += '<div class="cal-day" data-date="' + year + '-' + String(month+1).padStart(2,'0') + '-' + String(d).padStart(2,'0') + '">' + d + '</div>';
+        }
+        html += '</div>';
+        container.html(html);
+
+        container.find(".cal-prev").on("click", function(e) {
+          e.stopPropagation();
+          month--; if (month < 0) { month = 11; year--; }
+          render(year, month);
+        });
+        container.find(".cal-next").on("click", function(e) {
+          e.stopPropagation();
+          month++; if (month > 11) { month = 0; year++; }
+          render(year, month);
+        });
+        container.find(".cal-day").on("click", function(e) {
+          e.stopPropagation();
+          const date = $(this).data("date");
+          input.val(date);
+          container.hide();
+        });
+      }
+
+      input.on("click", function(e) {
+        e.stopPropagation();
+        $(".simple-calendar").hide();
+        render(current.getFullYear(), current.getMonth());
+        container.show();
+      });
+
+      render(current.getFullYear(), current.getMonth());
+      container.hide();
+    }
+
+    buildCalendar("departureCalendar", "departureDate");
+    buildCalendar("returnCalendar", "returnDate");
+
+    $(document).on("click", function() { $(".simple-calendar").hide(); });
+
+    // ---- Passenger Counter ----
+    let adults = 1, children = 0;
+
+    function updatePassengerBtn() {
+      let label = adults + " Adult" + (adults > 1 ? "s" : "");
+      if (children > 0) label += ", " + children + " Child" + (children > 1 ? "ren" : "");
+      $("#passengerBtn").text(label);
+    }
+
+    $("#passengerBtn").on("click", function(e) {
+      e.stopPropagation();
+      $("#passengerPanel").toggleClass("hidden");
+    });
+
+    $("#plusAdult").on("click", function() { if (adults < 9) { adults++; $("#adultCount").text(adults); updatePassengerBtn(); } });
+    $("#minusAdult").on("click", function() { if (adults > 1) { adults--; $("#adultCount").text(adults); updatePassengerBtn(); } });
+    $("#plusChild").on("click", function() { if (children < 9) { children++; $("#childCount").text(children); updatePassengerBtn(); } });
+    $("#minusChild").on("click", function() { if (children > 0) { children--; $("#childCount").text(children); updatePassengerBtn(); } });
+
+    $(document).on("click", function(e) {
+      if (!$(e.target).closest(".passenger-selector").length) {
+        $("#passengerPanel").addClass("hidden");
+      }
+    });
+
+    // ---- Deal card clicks ----
+    $(".deal-card").on("click", function (e) {
+      e.preventDefault();
+      const origin = $(this).data("origin");
+      const destination = $(this).data("destination");
+      const price = $(this).data("price");
+      sessionStorage.setItem("aeroblue_booking", JSON.stringify({
+        origin: origin,
+        destination: destination,
+        passengers: 1,
+        tripType: "return",
+        price: price,
+        departureDate: "",
+        returnDate: null
+      }));
+      window.location.href = "departure.html";
+    });
+
+    // ---- Start Booking button ----
+    $("#startBookingBtn").on("click", function () {
+      const origin = $("#originInput").val().trim();
+      const destination = $("#destinationInput").val().trim();
+      const departureDate = $("#departureDate").val().trim();
+      const returnDate = $("#returnDate").val().trim();
+      const tripType = $("input[name='tripType']:checked").val();
+
+      if (!origin) { $("#bookingError").text("Please enter an origin."); return; }
+      if (!destination) { $("#bookingError").text("Please enter a destination."); return; }
+      if (!departureDate) { $("#bookingError").text("Please select a departure date."); return; }
+      if (tripType === "return" && !returnDate) { $("#bookingError").text("Please select a return date."); return; }
+
+      $("#bookingError").text("");
+
+      const bookingData = {
+        origin: origin,
+        destination: destination,
+        departureDate: departureDate,
+        returnDate: returnDate || null,
+        passengers: adults + children,
+        adults: adults,
+        children: children,
+        tripType: tripType,
+        price: 0
+      };
+
+      sessionStorage.setItem("aeroblue_booking", JSON.stringify(bookingData));
+      window.location.href = "departure.html";
+    });
+
+  });
+  </script>
+
+</body>
+</html>
